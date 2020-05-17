@@ -10,14 +10,14 @@ type Props = {
   props?: Object,
 };
 
-const Layout = ({ component: Component, rest, ...props }: Props) => {
+const Layout = ({ component: Component, ...props }: Props) => {
   return (
     <Route
-      {...rest}
+      {...props}
       render={matchProps => (
         <AntLayout style={{ minHeight: '100vh' }}>
           <AntLayout>
-            <Filters />
+            <Filters {...matchProps} {...props} />
             <Component {...matchProps} {...props} />
           </AntLayout>
           )}

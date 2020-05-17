@@ -1,7 +1,9 @@
 /* @flow */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Select } from 'antd';
 import { Form, Input, Button, Row } from 'antd';
+import uuid from 'react-uuid';
+import { get } from 'lodash';
 
 const getNamesFromFields = fields => {
   const temp = [];
@@ -36,10 +38,15 @@ type Props = {
   isVisible: boolean,
   onClose: Function,
   onSubmit: Function,
+  dataForEdit: Object,
 };
 
-const AddTypeModal = ({ isVisible, onClose }: Props) => {
+const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
   const [fields, setFields] = useState([]);
+
+  useEffect(() => {
+    setFields(get(dataForEdit, 'fields', []));
+  }, [dataForEdit]);
 
   const handleAddFields = () => {
     const temp = {
@@ -68,13 +75,17 @@ const AddTypeModal = ({ isVisible, onClose }: Props) => {
 
   const onFinish = values => {
     console.log('Success:', values);
+    const type = {
+      ...values,
+      id: get(dataForEdit, 'id', uuid()),
+    };
+    onSubmit(type);
   };
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
 
-  console.log(fields, 'fields');
   return (
     <Modal
       visible={isVisible}
@@ -85,7 +96,10 @@ const AddTypeModal = ({ isVisible, onClose }: Props) => {
     >
       <Form
         name="basic"
-        initialValues={{ remember: true }}
+        initialValues={{
+          name: get(dataForEdit, 'name', ''),
+          title: get(dataForEdit, 'title', ''),
+        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         layout="vertical"
@@ -113,41 +127,45 @@ const AddTypeModal = ({ isVisible, onClose }: Props) => {
         </Form.Item>
         <p>Fields</p>
         {fields.map((item, index) => (
-          <Row key={`key-${index}-${item.fieldType}`}>
-            <Form.Item>
-              <Input.Group compact>
-                <Form.Item
-                  name={`fields.${index}.name`}
-                  noStyle
-                  rules={[{ required: true, message: 'Title is required' }]}
+          <Row
+            key={`key-${index}-${item.fieldType}`}
+            style={{ marginBottom: '1rem' }}
+          >
+            <Input.Group compact>
+              <Form.Item
+                name={['fields', index, 'name']}
+                noStyle
+                rules={[{ required: true, message: 'Title is required' }]}
+              >
+                <Input
+                  style={{ width: '50%' }}
+                  placeholder="Input Title"
+                  onChange={e => handleInputChange(e, index)}
+                  defaultValue={get(item, 'name', '')}
+                />
+              </Form.Item>
+              <Form.Item
+                name={['fields', index, 'fieldType']}
+                noStyle
+                rules={[{ required: true, message: 'Title is required' }]}
+              >
+                <Select
+                  placeholder="Select Type"
+                  onChange={value => handleTypeChange(value, index)}
+                  defaultValue={get(item, 'fieldType', '')}
+                  style={{ width: 200 }}
                 >
-                  <Input
-                    style={{ width: '50%' }}
-                    placeholder="Input Title"
-                    onChange={e => handleInputChange(e, index)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name={`fields.${index}.type`}
-                  noStyle
-                  rules={[{ required: true, message: 'Type is required' }]}
-                >
-                  <Select
-                    placeholder="Select Type"
-                    onChange={value => handleTypeChange(value, index)}
-                  >
-                    {fieldOptions.map((item, index) => (
-                      <Select.Option
-                        key={`key-${index}-${item}`}
-                        value={item.type}
-                      >
-                        {item.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Input.Group>
-            </Form.Item>
+                  {fieldOptions.map((item, index) => (
+                    <Select.Option
+                      key={`key-${index}-${item}`}
+                      value={item.type}
+                    >
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Input.Group>
           </Row>
         ))}
         <Button

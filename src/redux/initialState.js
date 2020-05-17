@@ -5,6 +5,7 @@ const initialState = {
     currentFilter: 'All',
   },
   types: [],
+  inventory: [],
 };
 
 export default initialState;

@@ -2,15 +2,15 @@ import { createStore, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import filters from './reducers/filters';
+import inventory from './reducers/inventory';
 import types from './reducers/types';
 
 import state from './initialState';
 
 function configureStore(initialState = state) {
   const reducer = combineReducers({
-    filters: filters,
     types,
+    inventory,
   });
 
   const store = createStore(
@@ -19,7 +19,7 @@ function configureStore(initialState = state) {
         key: 'root',
         debug: true,
         storage,
-        whitelist: ['auth', 'filters'],
+        whitelist: ['inventory', 'types'],
       },
       reducer,
     ),

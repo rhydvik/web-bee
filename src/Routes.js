@@ -12,7 +12,8 @@ const Routes = () => (
   <Router history={history}>
     <Switch>
       <Layout exact path="/" component={Views.Dashboard} />
-      <Layout path="/types" component={Views.ManageTypes} />
+      <Layout exact path="/type/:id" component={Views.Dashboard} />
+      <Layout path="/manage/types" component={Views.ManageTypes} />
     </Switch>
   </Router>
 );

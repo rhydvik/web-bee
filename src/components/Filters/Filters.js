@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 
 type Props = {
-  availableFilters: Array<string>,
   currentFilter: string,
+  types: Array<Object>,
+  match: Object,
 };
 
-const Filters = ({ availableFilters = [], currentFilter = 'All' }: Props) => {
-  const [current, setCurrent] = useState(currentFilter);
+const Filters = ({ types, match }: Props) => {
+  const [current, setCurrent] = useState('');
+  const [availableFilters, setAvailableFilters] = useState([{ name: 'All' }]);
+
+  const id = get(match, 'params.id', null);
+
+  useEffect(() => {
+    // create and set available filters
+    const temp = types.map(item => {
+      const obj = {
+        name: item.name,
+        id: item.id,
+      };
+      if (item.id === id) setCurrent(item.name);
+      return obj;
+    });
+    setAvailableFilters([{ name: 'All' }, ...temp]);
+  }, [id, types]);
 
   const handleClick = ({ key }) => {
     setCurrent(key);
@@ -18,18 +36,21 @@ const Filters = ({ availableFilters = [], currentFilter = 'All' }: Props) => {
   return (
     <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
       {availableFilters.map(item => (
-        <Menu.Item key={item}>{item}</Menu.Item>
+        <Menu.Item key={item.name}>
+          <Link to={item.id ? `/type/${get(item, 'id', '')}` : '/'}>
+            {item.name}
+          </Link>
+        </Menu.Item>
       ))}
       <Menu.Item key="Manage Types">
-        <Link to="/types/manageTypes">Manage Types</Link>
+        <Link to="/manage/types">Manage Types</Link>
       </Menu.Item>
     </Menu>
   );
 };
 
-const mapStateToProps = ({ filters }) => ({
-  availableFilters: filters.availableFilters,
-  currentFilter: filters.currentFilter,
+const mapStateToProps = ({ types }) => ({
+  types,
 });
 
 export default connect(mapStateToProps)(Filters);

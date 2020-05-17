@@ -3,10 +3,14 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import filters from './reducers/filters';
+import types from './reducers/types';
 
-function configureStore(initialState = {}) {
+import state from './initialState';
+
+function configureStore(initialState = state) {
   const reducer = combineReducers({
     filters: filters,
+    types,
   });
 
   const store = createStore(

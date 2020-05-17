@@ -9,6 +9,8 @@ import configureStore from './redux/configureStore';
 
 const { store, persistor } = configureStore();
 
+console.log(store, persistor);
+
 function App() {
   return (
     <ReduxProvider store={store}>

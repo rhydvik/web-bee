@@ -50,8 +50,8 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
 
   const handleAddFields = () => {
     const temp = {
-      name: 'title',
-      fieldType: 'SMALL_TEXT',
+      name: '',
+      fieldType: '',
     };
     setFields([...fields, temp]);
   };

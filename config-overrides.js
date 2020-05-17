@@ -1,3 +1,15 @@
-const { override, useEslintRc } = require('customize-cra');
+// eslint-disable-next-line
+const {override, fixBabelImports, useEslintRc, addLessLoader} = require('customize-cra');
 
-module.exports = override(useEslintRc());
+module.exports = override(
+  fixBabelImports('import', {
+    libraryName: 'antd',
+    libraryDirectory: 'es',
+    style: true,
+  }),
+  // overrides for ant.design
+  addLessLoader({
+    javascriptEnabled: true,
+  }),
+  useEslintRc(),
+);

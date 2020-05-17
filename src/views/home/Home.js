@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Button } from 'antd';
+
 import { updateFilters } from '../../redux/reducers/filters';
 
 type Props = {
@@ -16,7 +18,9 @@ const Home = ({ dispatch, list }: Props) => {
   return (
     <div>
       Home
-      <button onClick={handleDispatch}>Dispatch button</button>
+      <Button onClick={handleDispatch} type="primary">
+        Primary
+      </Button>
     </div>
   );
 };

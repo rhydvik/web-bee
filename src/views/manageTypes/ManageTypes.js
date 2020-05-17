@@ -24,6 +24,7 @@ const ManageTypes = ({ types, dispatch }: Props) => {
 
   const handleAddTypeClose = () => {
     setShowAddTypeModal(false);
+    setDataForEdit({});
   };
 
   const handleSubmit = data => {
@@ -36,6 +37,7 @@ const ManageTypes = ({ types, dispatch }: Props) => {
     }
     dispatch(updateType(temp));
     setShowAddTypeModal(false);
+    setDataForEdit({});
   };
 
   const handleTypeEdit = index => {

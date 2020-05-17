@@ -54,8 +54,8 @@ const ItemCard = ({
                   <InputNumber
                     defaultValue={field.value}
                     style={{ width: '100%' }}
-                    onChange={e =>
-                      handleFieldUpdate(index, fieldIndex, e.target.value, item)
+                    onChange={text =>
+                      handleFieldUpdate(index, fieldIndex, text, item)
                     }
                   />
                 )}

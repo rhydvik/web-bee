@@ -47,10 +47,7 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
 
   useEffect(() => {
     setFields(get(dataForEdit, 'fields', []));
-    const temp = {
-      name: get(dataForEdit, 'name', ''),
-      title: get(dataForEdit, 'title', ''),
-    };
+    const temp = {};
 
     get(dataForEdit, 'fields', []).map((item, index) => { // eslint-disable-line
       temp[`fields.${index}.name`] = item.name;
@@ -108,6 +105,8 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
       <Form
         name="basic"
         initialValues={{
+          name: get(dataForEdit, 'name', ''),
+          title: get(dataForEdit, 'title', ''),
           ...formInitialValues,
         }}
         onFinish={onFinish}

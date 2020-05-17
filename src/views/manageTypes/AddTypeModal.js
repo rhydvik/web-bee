@@ -52,12 +52,10 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
       title: get(dataForEdit, 'title', ''),
     };
 
-    get(dataForEdit, 'fields', []).map((item, index) => {
-      console.log(item);
+    get(dataForEdit, 'fields', []).map((item, index) => { // eslint-disable-line
       temp[`fields.${index}.name`] = item.name;
       temp[`fields.${index}.fieldType`] = item.fieldType;
     });
-    console.log(temp, 'temp');
     setFormInitialValues(temp);
   }, [dataForEdit]);
 

@@ -5,6 +5,7 @@ import initialState from '../initialState';
 // Actions
 const ADD_INVENTORY = 'inventory/ADD-INVENTORY';
 const DELETE_INVENTORY = 'inventory/DELETE-INVENTORY';
+const UPDATE_INVENTORY = 'inventory/UPDATE_INVENTORY';
 
 // Reducer
 export default function reducer(state = initialState.inventory, action = {}) {
@@ -16,6 +17,10 @@ export default function reducer(state = initialState.inventory, action = {}) {
     case DELETE_INVENTORY:
       return produce(state, draft => {
         draft.splice(action.payload, 1);
+      });
+    case UPDATE_INVENTORY:
+      return produce(state, draft => {
+        draft[action.payload.index] = action.payload.item;
       });
     default:
       return state;
@@ -34,5 +39,15 @@ export function deleteInventory(index) {
   return {
     type: DELETE_INVENTORY,
     payload: index,
+  };
+}
+
+export function updateInventory(index, item) {
+  return {
+    type: UPDATE_INVENTORY,
+    payload: {
+      index,
+      item,
+    },
   };
 }

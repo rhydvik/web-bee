@@ -35,6 +35,7 @@ const ManageTypes = ({ types, dispatch }: Props) => {
       temp.push(data);
     }
     dispatch(updateType(temp));
+    setShowAddTypeModal(false);
   };
 
   const handleTypeEdit = index => {

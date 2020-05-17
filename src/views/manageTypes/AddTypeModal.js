@@ -43,9 +43,22 @@ type Props = {
 
 const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
   const [fields, setFields] = useState([]);
+  const [formInitialValues, setFormInitialValues] = useState({});
 
   useEffect(() => {
     setFields(get(dataForEdit, 'fields', []));
+    const temp = {
+      name: get(dataForEdit, 'name', ''),
+      title: get(dataForEdit, 'title', ''),
+    };
+
+    get(dataForEdit, 'fields', []).map((item, index) => {
+      console.log(item);
+      temp[`fields.${index}.name`] = item.name;
+      temp[`fields.${index}.fieldType`] = item.fieldType;
+    });
+    console.log(temp, 'temp');
+    setFormInitialValues(temp);
   }, [dataForEdit]);
 
   const handleAddFields = () => {
@@ -97,8 +110,7 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
       <Form
         name="basic"
         initialValues={{
-          name: get(dataForEdit, 'name', ''),
-          title: get(dataForEdit, 'title', ''),
+          ...formInitialValues,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -135,7 +147,7 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
               <Form.Item
                 name={['fields', index, 'name']}
                 noStyle
-                rules={[{ required: true, message: 'Title is required' }]}
+                rules={[{ required: true, message: 'Title is required!' }]}
               >
                 <Input
                   style={{ width: '50%' }}
@@ -147,7 +159,7 @@ const AddTypeModal = ({ isVisible, onClose, onSubmit, dataForEdit }: Props) => {
               <Form.Item
                 name={['fields', index, 'fieldType']}
                 noStyle
-                rules={[{ required: true, message: 'Title is required' }]}
+                rules={[{ required: true, message: 'Title is required!' }]}
               >
                 <Select
                   placeholder="Select Type"

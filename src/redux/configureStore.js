@@ -17,13 +17,14 @@ function configureStore(initialState = state) {
     persistReducer(
       {
         key: 'root',
-        debug: true,
         storage,
         whitelist: ['inventory', 'types'],
       },
       reducer,
     ),
     initialState,
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+      window.__REDUX_DEVTOOLS_EXTENSION__(),
   );
 
   const persistor = persistStore(store);

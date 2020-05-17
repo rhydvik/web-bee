@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import { Dropdown, Button, Menu, Form, Input, Card, Row, Modal } from 'antd';
+import { Dropdown, Button, Menu, Row, Modal } from 'antd';
 import uuid from 'react-uuid';
 import {
   addInventoryItem,
   deleteInventory,
+  updateInventory,
 } from '../../redux/reducers/inventory';
-import { DeleteFilled } from '@ant-design/icons';
+import ItemCard from './itemCard';
 
 type Props = {
   dispatch: Function,
@@ -44,11 +45,6 @@ const Home = ({ dispatch, match, inventory, types }: Props) => {
     }
   }, [id, inventory]);
 
-  useEffect(() => {
-    // when list gets updated , update the inventory
-    console.log('here');
-  }, [list]);
-
   const handleAddItem = ({ key }) => {
     console.log(key);
     const index = types.findIndex(item => item.id === key);
@@ -71,19 +67,30 @@ const Home = ({ dispatch, match, inventory, types }: Props) => {
     </Menu>
   );
 
-  const handleFieldUpdate = (listIndex, fieldIndex, value, item) => {
-    console.log(listIndex, value, fieldIndex, item, inventory);
-    let fields = get(item, 'fields');
+  const handleFieldUpdate = (listIndex, fieldIndex, value, itemToUpdate) => {
+    console.log(itemToUpdate, inventory);
+    let fields = [...get(itemToUpdate, 'fields', [])];
     if (fields) {
-      fields[fieldIndex].value = value;
+      fields[fieldIndex] = {
+        ...fields[fieldIndex],
+        value: value,
+      };
     }
     const listItemToUpdate = {
-      ...item,
+      ...itemToUpdate,
       fields,
     };
     const temp = [...list];
     temp[listIndex] = listItemToUpdate;
     setList([...temp]);
+
+    // find inventory id an update inventory
+    const inventoryIndex = inventory.findIndex(
+      item => item.id === itemToUpdate.id,
+    );
+    if (inventoryIndex > -1) {
+      dispatch(updateInventory(inventoryIndex, listItemToUpdate));
+    }
   };
 
   const deleteTypeConfirmation = id => {
@@ -104,7 +111,7 @@ const Home = ({ dispatch, match, inventory, types }: Props) => {
     }
   };
 
-  console.log(list, 'list');
+  console.log(inventory, 'inventory');
 
   return (
     <>
@@ -119,45 +126,12 @@ const Home = ({ dispatch, match, inventory, types }: Props) => {
           </Button>
         )}
       </Row>
-      <Row justif="start">
-        {list.map((item, index) => (
-          <Card
-            style={{ width: 400, marginRight: 20, marginBottom: 20 }}
-            key={item.id}
-            title={`${item.name}-${get(item, 'fields[0].value', '')}`}
-            extra={
-              <DeleteFilled
-                key="ellipsis"
-                onClick={() => deleteTypeConfirmation(item.id)}
-              />
-            }
-          >
-            <Form
-              name="basic"
-              initialValues={{ remember: true }}
-              layout="vertical"
-            >
-              {item.fields.map((field, fieldIndex) => (
-                <Form.Item
-                  key={`key-${fieldIndex}`}
-                  label={field.name}
-                  name={field.name}
-                  rules={[
-                    { required: true, message: 'Please input your username!' },
-                  ]}
-                >
-                  <Input
-                    defaultValue={field.value}
-                    onChange={e =>
-                      handleFieldUpdate(index, fieldIndex, e.target.value, item)
-                    }
-                  />
-                </Form.Item>
-              ))}
-            </Form>
-          </Card>
-        ))}
-      </Row>
+
+      <ItemCard
+        list={list}
+        handleFieldUpdate={handleFieldUpdate}
+        deleteTypeConfirmation={deleteTypeConfirmation}
+      />
     </>
   );
 };
